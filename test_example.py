@@ -1,21 +1,12 @@
 import os
 
-import pytest
+import string
+import math
+import time
 
 from selene import be, have, command
 from selene.support.shared import browser
 
-from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
-
-
-@pytest.fixture(autouse=True)
-def open_browser():
-    browser.config.base_url = "https://demoqa.com"
-    browser.config.driver = webdriver.Chrome(ChromeDriverManager().install())
-    browser.config.driver.maximize_window()
-    yield
-    browser.quit()
 
 
 def test_fill_form():
@@ -35,19 +26,19 @@ def test_fill_form():
     browser.element("#subjectsInput").type("Computer Science").press_enter()
 
     # Удаляем рекламу на странице
-    ads = browser.all('[id^=google_ads_][id$=container__]')
-    ads.should(have.size_less_than_or_equal(3))
-    ads.perform(command.js.remove)
+    ads = browser.all('[id^=google_ads_][id$=container__]').should(have.size_less_than_or_equal(3)).perform(command.js.remove)
 
     # Кликаем по всем чек-боксам в форме
     checkboxes = browser.elements(".custom-checkbox label")
     for checkbox in checkboxes:
         checkbox.click()
+        checkbox.click()
+        checkbox.click()
 
     # Загружаем картинку в форме
-    browser.element('#uploadPicture').set_value(
-        os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, 'task/photo.jpeg')))
+    browser.element('#uploadPicture').set_value(r"C:\Users\maxim\OneDrive\Рабочий стол\task\photo.jpeg")
     # Заполянем оставшиеся поля
+    time.sleep(5)
     browser.element("#currentAddress").should(be.blank).type("It's my address")
     browser.element("#react-select-3-input").type("NCR").press_enter()
     browser.element("#react-select-4-input").type("Delhi").press_enter()
